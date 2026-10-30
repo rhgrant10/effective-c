@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <float.h>
@@ -25,4 +26,5 @@ int main() {
     for (unsigned int i = 0; i < n; i++) {
         printf("%e is %s\n", numbers[i], show_classification(numbers[i]));
     }
+    return EXIT_SUCCESS;
 }
