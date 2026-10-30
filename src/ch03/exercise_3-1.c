@@ -15,7 +15,6 @@ const char *show_classification(double x) {
 }
 
 int main() {
-    const char *classification;
     const unsigned int n = 5;
     double numbers[n];
     numbers[0] = 0;
