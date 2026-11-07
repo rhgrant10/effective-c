@@ -1,6 +1,8 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include<limits.h>
+#include<stdbool.h>
+
 
 typedef struct {
     int value;
@@ -16,7 +18,7 @@ unsigned int absolute_value(int a) {
 }
 
 
-int main() {
+int main(void) {
     test_case test_cases[] = {
         {0, 0u},
         {-1, 1u},
