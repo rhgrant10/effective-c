@@ -1,7 +1,7 @@
-#include <stdlib.h>
+#include <err.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <err.h>
+#include <stdlib.h>
 
 static void show_usage(void) {
     fputs("tac prints a file from bottom to top\n", stderr);
@@ -26,7 +26,7 @@ static bool str_push(struct str *s, const char c) {
         s->cap = cap;
     }
     s->data[s->len] = c;
-    s->data[s->len+1] = '\0';
+    s->data[s->len + 1] = '\0';
     s->len += 1;
     return true;
 }
@@ -38,11 +38,10 @@ static void str_free(struct str *s) {
 
 static const char *str_cstr(const struct str *s) {
     return s->len ? s->data : "";
-} 
-
+}
 
 struct strlist {
-    struct str *items;  // array of structs
+    struct str *items; // array of structs
     size_t len;
     size_t cap;
 };
@@ -124,4 +123,3 @@ int main(int argc, char *argv[]) {
     strlist_free(&lines);
     return EXIT_SUCCESS;
 }
-
