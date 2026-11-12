@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
     readlines(filename, &lines);
 
     for (int i = lines.len - 1; i >= 0; i--) {
-        printf(str_cstr(&lines.items[i]));
+        printf("%s", str_cstr(&lines.items[i]));
     }
     strlist_free(&lines);
     return EXIT_SUCCESS;
