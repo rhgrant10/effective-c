@@ -89,35 +89,37 @@ void strlist_free(struct strlist *list) {
 bool readlines(const char *filename, struct strlist *lines) {
     FILE *fp = fopen(filename, "r");
     if (!fp) {
-        err(EXIT_FAILURE, "%s", filename);
+        warn("could not open %s", filename);
+        return false;
     }
+
+    bool ok = false;
     struct str line = {0};
     int c; 
     while ((c = fgetc(fp)) != EOF) {
         if (!str_push(&line, c)) {
-            fclose(fp);
-            str_free(&line);
-            return false;
+            goto cleanup;
         }
         if (c == '\n') {
             if (!strlist_push(lines, &line)) {
-                fclose(fp);
-                str_free(&line);
-                return false;
+                goto cleanup;
             }
             str_free(&line);
-            line = (struct str){0};
         }
     }
+    if (ferror(fp)) {
+        warn("error while reading %s", filename);
+        goto cleanup;
+    }
+    if (line.len > 0 && !strlist_push(lines, &line)) {
+        goto cleanup;
+    }
+
+    ok = true;
+cleanup:
+    str_free(&line);
     fclose(fp);
-    if (line.len > 0) {
-        if (!strlist_push(lines, &line)) {
-            str_free(&line);
-            return false;
-        }
-        str_free(&line);
-    }
-    return true;
+    return ok;
 }
 
 int main(int argc, char *argv[]) {
