@@ -101,6 +101,7 @@ static bool readlines(const char *filename, struct strlist *lines) {
 
     ok = true;
 cleanup:
+    str_free(&line);
     fclose(fp);
     return ok;
 }
