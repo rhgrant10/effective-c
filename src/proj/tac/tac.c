@@ -81,10 +81,12 @@ static bool readlines(const char *filename, struct strlist *lines) {
     int c;
     while ((c = fgetc(fp)) != EOF) {
         if (!str_push(&line, (char)c)) {
+            warn("could not add char to line buffer");
             goto cleanup;
         }
         if (c == '\n') {
             if (!strlist_push(lines, &line)) {
+                warn("could not add line to text buffer");
                 goto cleanup;
             }
         }
@@ -94,6 +96,7 @@ static bool readlines(const char *filename, struct strlist *lines) {
         goto cleanup;
     }
     if (line.len > 0 && !strlist_push(lines, &line)) {
+        warn("could not add last line to text buffer");
         goto cleanup;
     }
 
@@ -120,5 +123,10 @@ int main(int argc, char *argv[]) {
         printf("%s", str_cstr(&lines.items[i - 1]));
     }
     strlist_free(&lines);
+
+    if (fflush(stdout) == EOF || ferror(stdout)) {
+        warn("error writing output");
+        return EXIT_FAILURE;
+    }
     return EXIT_SUCCESS;
 }
