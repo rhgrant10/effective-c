@@ -18,8 +18,7 @@ static bool str_push(struct str *s, const char c) {
     char *data;
     if (s->len + 1 >= s->cap) {
         size_t cap = s->cap ? 2 * s->cap : 2;
-        data = realloc(s->data, cap);
-        if (!data) {
+        if ((data = realloc(s->data, cap)) == NULL) {
             return false;
         }
         s->data = data;
@@ -50,8 +49,7 @@ static bool strlist_push(struct strlist *list, struct str *item) {
     struct str *items;
     if (list->len == list->cap) {
         size_t cap = list->cap ? 2 * list->cap : 1;
-        items = realloc(list->items, cap * sizeof *list->items);
-        if (!items) {
+        if ((items = realloc(list->items, cap * sizeof *list->items)) == NULL) {
             return false;
         }
         list->items = items;
@@ -72,8 +70,8 @@ static void strlist_free(struct strlist *list) {
 }
 
 static bool readlines(const char *filename, struct strlist *lines) {
-    FILE *fp = fopen(filename, "r");
-    if (!fp) {
+    FILE *fp;
+    if ((fp = fopen(filename, "r")) == NULL) {
         warn("could not open %s", filename);
         return false;
     }
