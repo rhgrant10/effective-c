@@ -56,25 +56,20 @@ struct strlist {
     size_t cap;
 };
 
-bool strlist_push(struct strlist *list, const struct str *item) {
-    struct str copy = {0};
-    if (!str_append(&copy, str_cstr(item))) {
-        str_free(&copy);
-        return false;
-    }
+bool strlist_push(struct strlist *list, struct str *item) {
     struct str *items;
     if (list->len == list->cap) {
         size_t cap = list->cap ? 2 * list->cap : 1;
         items = realloc(list->items, cap * sizeof *list->items);
         if (!items) {
-            str_free(&copy);
             return false;
         }
         list->items = items;
         list->cap = cap;
     }
-    list->items[list->len] = copy;
+    list->items[list->len] = *item;
     list->len += 1;
+    *item = (struct str){0};
     return true;
 }
 
@@ -104,7 +99,6 @@ bool readlines(const char *filename, struct strlist *lines) {
             if (!strlist_push(lines, &line)) {
                 goto cleanup;
             }
-            str_free(&line);
         }
     }
     if (ferror(fp)) {
@@ -117,7 +111,6 @@ bool readlines(const char *filename, struct strlist *lines) {
 
     ok = true;
 cleanup:
-    str_free(&line);
     fclose(fp);
     return ok;
 }
