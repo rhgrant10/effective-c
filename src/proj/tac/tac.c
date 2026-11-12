@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -60,6 +59,7 @@ struct strlist {
 bool strlist_push(struct strlist *list, const struct str *item) {
     struct str copy = {0};
     if (!str_append(&copy, str_cstr(item))) {
+        str_free(&copy);
         return false;
     }
     struct str *items;
@@ -67,6 +67,7 @@ bool strlist_push(struct strlist *list, const struct str *item) {
         size_t cap = list->cap ? 2 * list->cap : 1;
         items = realloc(list->items, cap * sizeof *list->items);
         if (!items) {
+            str_free(&copy);
             return false;
         }
         list->items = items;
@@ -85,18 +86,23 @@ void strlist_free(struct strlist *list) {
     *list = (struct strlist){0};
 }
 
-int readlines(const char *filename, struct strlist *lines) {
+bool readlines(const char *filename, struct strlist *lines) {
     FILE *fp = fopen(filename, "r");
     if (!fp) {
-        return false;
+        err(EXIT_FAILURE, "%s", filename);
     }
     struct str line = {0};
     int c; 
     while ((c = fgetc(fp)) != EOF) {
-        str_push(&line, c);
+        if (!str_push(&line, c)) {
+            fclose(fp);
+            str_free(&line);
+            return false;
+        }
         if (c == '\n') {
             if (!strlist_push(lines, &line)) {
                 fclose(fp);
+                str_free(&line);
                 return false;
             }
             str_free(&line);
@@ -104,6 +110,13 @@ int readlines(const char *filename, struct strlist *lines) {
         }
     }
     fclose(fp);
+    if (line.len > 0) {
+        if (!strlist_push(lines, &line)) {
+            str_free(&line);
+            return false;
+        }
+        str_free(&line);
+    }
     return true;
 }
 
@@ -114,10 +127,13 @@ int main(int argc, char *argv[]) {
     }
     const char *filename = argv[1];
     struct strlist lines = {0};
-    readlines(filename, &lines);
+    if (!readlines(filename, &lines)) {
+        strlist_free(&lines);
+        return EXIT_FAILURE;
+    }
 
-    for (int i = lines.len - 1; i >= 0; i--) {
-        printf("%s", str_cstr(&lines.items[i]));
+    for (size_t i = lines.len; i > 0; i--) {
+        printf("%s", str_cstr(&lines.items[i - 1]));
     }
     strlist_free(&lines);
     return EXIT_SUCCESS;
