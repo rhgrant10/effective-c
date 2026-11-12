@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <err.h>
 
-void show_usage(void) {
+static void show_usage(void) {
     fputs("tac prints a file from bottom to top\n", stderr);
     fputs("Usage: tac <FILENAME>\n", stderr);
 }
@@ -14,7 +14,7 @@ struct str {
     size_t cap;
 };
 
-bool str_push(struct str *s, const char c) {
+static bool str_push(struct str *s, const char c) {
     char *data;
     if (s->len + 1 >= s->cap) {
         size_t cap = s->cap ? 2 * s->cap : 2;
@@ -31,21 +31,12 @@ bool str_push(struct str *s, const char c) {
     return true;
 }
 
-void str_free(struct str *s) {
+static void str_free(struct str *s) {
     free(s->data);
     *s = (struct str){0};
 }
 
-bool str_append(struct str *s, const char *data) {
-    for (size_t i = 0; data[i] != '\0'; i++) {
-        if (!str_push(s, data[i])) {
-            return false;
-        }
-    }
-    return true;
-}
-
-const char *str_cstr(const struct str *s) {
+static const char *str_cstr(const struct str *s) {
     return s->len ? s->data : "";
 } 
 
@@ -56,7 +47,7 @@ struct strlist {
     size_t cap;
 };
 
-bool strlist_push(struct strlist *list, struct str *item) {
+static bool strlist_push(struct strlist *list, struct str *item) {
     struct str *items;
     if (list->len == list->cap) {
         size_t cap = list->cap ? 2 * list->cap : 1;
@@ -73,7 +64,7 @@ bool strlist_push(struct strlist *list, struct str *item) {
     return true;
 }
 
-void strlist_free(struct strlist *list) {
+static void strlist_free(struct strlist *list) {
     for (size_t i = 0; i < list->len; i++) {
         str_free(&list->items[i]);
     }
@@ -81,7 +72,7 @@ void strlist_free(struct strlist *list) {
     *list = (struct strlist){0};
 }
 
-bool readlines(const char *filename, struct strlist *lines) {
+static bool readlines(const char *filename, struct strlist *lines) {
     FILE *fp = fopen(filename, "r");
     if (!fp) {
         warn("could not open %s", filename);
@@ -90,9 +81,9 @@ bool readlines(const char *filename, struct strlist *lines) {
 
     bool ok = false;
     struct str line = {0};
-    int c; 
+    int c;
     while ((c = fgetc(fp)) != EOF) {
-        if (!str_push(&line, c)) {
+        if (!str_push(&line, (char)c)) {
             goto cleanup;
         }
         if (c == '\n') {
