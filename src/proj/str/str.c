@@ -1,6 +1,6 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<stdbool.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 struct str {
     char *data;
@@ -14,13 +14,13 @@ bool str_push(struct str *s, char c) {
         size_t new_capacity = s->capacity ? 2 * s->capacity : 2;
         new_data = realloc(s->data, new_capacity);
         if (new_data == NULL) {
-            return false;  // reallocation failed
+            return false; // reallocation failed
         }
         s->data = new_data;
         s->capacity = new_capacity;
     }
     s->data[s->length] = c;
-    s->data[s->length+1] = '\0';
+    s->data[s->length + 1] = '\0';
     s->length += 1;
     return true;
 }
@@ -30,7 +30,7 @@ const char *str_cstr(const struct str *s) {
 }
 
 bool str_append(struct str *s, const char *data) {
-    for (size_t i = 0; data[i] != '\0'; i++ ) {
+    for (size_t i = 0; data[i] != '\0'; i++) {
         if (!str_push(s, data[i])) {
             return false;
         }

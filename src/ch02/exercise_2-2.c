@@ -1,11 +1,11 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 void f(void);
 
-typedef void (func)(void);
+typedef void(func)(void);
 
-static func * func_arr[3];
+static func *func_arr[3];
 
 void one() {
     puts("1");
@@ -18,7 +18,6 @@ void two() {
 void three() {
     puts("3");
 }
-
 
 void invoke(unsigned int i) {
     (*func_arr[i])();

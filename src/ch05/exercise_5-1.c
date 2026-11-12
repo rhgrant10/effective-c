@@ -1,5 +1,5 @@
-#include<stdlib.h>
-#include<stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef int object_t;
 
@@ -12,14 +12,14 @@ typedef enum {
 
 const char *ds_strerror(ds_status status) {
     switch (status) {
-        case DS_OK:
-            return "success";
-        case DS_ERR_OPEN_A_FILE:
-            return "could not open a_file for writing";
-        case DS_ERR_OPEN_ANOTHER_FILE:
-            return "could not open another_file for writing";
-        case DS_ERR_ALLOC_OBJECT:
-            return "could not allocate the object";
+    case DS_OK:
+        return "success";
+    case DS_ERR_OPEN_A_FILE:
+        return "could not open a_file for writing";
+    case DS_ERR_OPEN_ANOTHER_FILE:
+        return "could not open another_file for writing";
+    case DS_ERR_ALLOC_OBJECT:
+        return "could not allocate the object";
     }
     return "unknown error";
 }
@@ -63,4 +63,3 @@ int main() {
     }
     return status;
 }
-

@@ -1,15 +1,18 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include <setjmp.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 static jmp_buf buf;
 
 int main() {
-  volatile int foo = 5;
-  if (setjmp(buf) != 2) {
-    if (foo != 5) {puts("hi"); longjmp(buf, 2);}
-    foo = 6;
-    longjmp(buf, 1);
-  }
-  return EXIT_SUCCESS;
+    volatile int foo = 5;
+    if (setjmp(buf) != 2) {
+        if (foo != 5) {
+            puts("hi");
+            longjmp(buf, 2);
+        }
+        foo = 6;
+        longjmp(buf, 1);
+    }
+    return EXIT_SUCCESS;
 }

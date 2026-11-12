@@ -1,14 +1,12 @@
-#include<stdlib.h>
-#include<stdio.h>
-#include<limits.h>
-#include<stdbool.h>
-
+#include <limits.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef struct {
     int value;
     unsigned int expected;
 } test_case;
-
 
 unsigned int absolute_value(int a) {
     if (a >= 0) {
@@ -16,7 +14,6 @@ unsigned int absolute_value(int a) {
     }
     return -(unsigned)a;
 }
-
 
 int main(void) {
     test_case test_cases[] = {
@@ -34,9 +31,11 @@ int main(void) {
         unsigned int actual = absolute_value(test_cases[i].value);
         if (actual != test_cases[i].expected) {
             all_pass = false;
-            printf("FAIL absolute_value(%d): want %u, got %u\n", test_cases[i].value, test_cases[i].expected, actual);
+            printf("FAIL absolute_value(%d): want %u, got %u\n",
+                   test_cases[i].value, test_cases[i].expected, actual);
         } else {
-            printf("PASS absolute_value(%d) == %u\n", test_cases[i].value, test_cases[i].expected);
+            printf("PASS absolute_value(%d) == %u\n", test_cases[i].value,
+                   test_cases[i].expected);
         }
     }
 

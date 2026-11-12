@@ -1,6 +1,6 @@
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
 
 int main() {
     int i = INT_MAX;
